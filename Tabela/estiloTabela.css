@@ -1,0 +1,16 @@
+table {
+    --cor-borda: black;
+    --tipo-borda: solid;
+    --tamanho-borda: 1px;
+    border-collapse: collapse;
+}
+
+td {
+    border: var(--tamanho-borda) var(--tipo-borda) var(--cor-borda);
+    padding: 5px;
+    vertical-align: top;
+}
+
+dados {
+    display: none;
+}
