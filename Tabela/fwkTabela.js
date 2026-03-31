@@ -1,3 +1,4 @@
+//fwk possui apenas colspan
 let tabela = document.getElementsByTagName("tabela");
 for(let i=0;i<tabela.length;i++){
     let tab = tabela[i];

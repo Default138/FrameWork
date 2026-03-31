@@ -1,5 +1,4 @@
-//processa ambos rowspan e colspan
-
+//fwk possui colspan e constroi dados
 let tabelas = document.getElementsByTagName("tabela");
 
 for (let i = 0; i < tabelas.length; i++) {
@@ -18,6 +17,19 @@ for (let i = 0; i < tabelas.length; i++) {
             tamanho: parseInt(expands[e].getAttribute("tamanho")),
             tipo: expands[e].getAttribute("tipo")
         });
+    }
+
+    let dadosTag = tabelaAtual.getElementsByTagName("dados")[0];
+    let dados = [];
+    
+    if (dadosTag) {
+        let texto = dadosTag.textContent.trim();
+        let linhaDados = texto.split("\n");
+        
+        for (let linha of linhaDados) {
+            let colunas = linha.split("|");
+            dados.push(colunas.map(c => c.trim()));
+        }
     }
 
     let bordaAttr = tabelaAtual.getAttribute("borda");
@@ -59,6 +71,12 @@ for (let i = 0; i < tabelas.length; i++) {
             // Se a célula não estiver ocupada por uma expansão anterior, cria-se uma nova célula
             if (!ocupado[linha][coluna]) {
                 let td = document.createElement("td");
+                
+                // Insere o texto dos dados se disponível
+                if (dados[linha] && dados[linha][coluna]) {
+                    td.innerText = dados[linha][coluna];
+                }
+                
                 // Verifica se há um expand exatamente nesta posição
                 let expandAtual = expandsInfo.find(e => e.linha === linha && e.coluna === coluna);
 
