@@ -1,0 +1,113 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Construtor de Formulários</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f0f2f5;
+            padding: 24px;
+            color: #333;
+        }
+        h1 { margin-bottom: 16px; font-size: 1.5rem; color: #1a1a2e; }
+        #construtor {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        .campo-linha {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .campo-linha label { font-size: 0.85rem; font-weight: 600; margin-bottom: 2px; display: block; }
+        .campo-linha input[type="text"],
+        .campo-linha select {
+            padding: 6px 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        /* Container de opções do Select */
+        .opcoes-container {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            margin-top: 4px;
+        }
+        .opcoes-container.visivel { display: flex; }
+        .opcoes-container input {
+            padding: 4px 8px;
+            border: 1px solid #bbb;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            width: 160px;
+        }
+        .opcoes-container button {
+            font-size: 0.75rem;
+            background: #e8eaf6;
+            border: none;
+            border-radius: 4px;
+            padding: 3px 8px;
+            cursor: pointer;
+            width: fit-content;
+        }
+        .btn-acao {
+            padding: 8px 18px;
+            border: none;
+            border-radius: 7px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        #btn-novo  { background: #4f46e5; color: #fff; }
+        #btn-novo:hover { background: #3730a3; }
+        #btn-concluir { background: #059669; color: #fff; }
+        #btn-concluir:hover { background: #047857; }
+        .botoes-topo { display: flex; gap: 10px; margin-bottom: 16px; }
+        hr { border: none; border-top: 1px solid #e5e7eb; margin: 12px 0; }
+
+        /* Preview */
+        #area-preview {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        #area-preview h2 { font-size: 1rem; color: #555; margin-bottom: 12px; }
+        #preview {
+            width: 100%;
+            min-height: 200px;
+            border: 1px dashed #ccc;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="construtor">
+    <h1>🛠️ Construtor de Formulário</h1>
+    <div class="botoes-topo">
+        <button class="btn-acao" id="btn-novo" type="button" onclick="novoCampo()">+ Novo campo</button>
+        <button class="btn-acao" id="btn-concluir" type="button" onclick="visualizarForm()">✔ Visualizar</button>
+    </div>
+    <hr>
+    <div id="campos-wrapper">
+        <!-- Campo inicial gerado por JS -->
+    </div>
+</div>
+
+<div id="area-preview">
+    <h2>Pré-visualização</h2>
+    <iframe id="preview"></iframe>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

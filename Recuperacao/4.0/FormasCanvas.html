@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Formas no Canvas</title>
+
+    <script>
+        function atualizarCampos() {
+            const tipo = document.getElementById("tipo").value;
+            const dimensoes = document.getElementById("dimensoes");
+
+            dimensoes.innerHTML = "";
+
+            if (tipo === "circulo") {
+                dimensoes.innerHTML = `
+            X: <input type="number" name="x"><br>
+            Y: <input type="number" name="y"><br>
+            Raio: <input type="number" name="raio"><br>
+        `;
+            } else if (tipo === "retangulo") {
+                dimensoes.innerHTML = `
+            X: <input type="number" name="x"><br>
+            Y: <input type="number" name="y"><br>
+            Largura: <input type="number" name="largura"><br>
+            Altura: <input type="number" name="altura"><br>
+        `;
+            }
+        }
+    </script>
+
+</head>
+
+<body>
+
+    <h2>Criar Forma Geométrica</h2>
+
+    <form method="post" action="processa.php">
+
+        <!-- Tipo -->
+        Tipo da forma:
+        <select name="tipo" id="tipo" onchange="atualizarCampos()">
+            <option value="">Selecione</option>
+            <option value="circulo">Círculo</option>
+            <option value="retangulo">Retângulo</option>
+        </select>
+        <br><br>
+
+        <!-- Cor preenchimento -->
+        Cor de preenchimento:
+        <select name="corPreenchimento">
+            <option value="red">Vermelho</option>
+            <option value="blue">Azul</option>
+            <option value="green">Verde</option>
+            <option value="yellow">Amarelo</option>
+        </select>
+        <br><br>
+
+        <!-- Cor borda -->
+        Cor da borda:
+        <select name="corBorda">
+            <option value="black">Preto</option>
+            <option value="gray">Cinza</option>
+            <option value="white">Branco</option>
+        </select>
+        <br><br>
+
+        <!-- Dimensões dinâmicas -->
+        <div id="dimensoes"></div>
+        <br>
+
+        <!-- Movimento -->
+        Movimento:
+        <input type="radio" name="movimento" value="sim"> Sim
+        <input type="radio" name="movimento" value="nao" checked> Não
+        <br><br>
+
+    <!-- Botão -->
+    <button type="button">Criar Forma</button>
+
+</form>
+
+</body>
+</html>
+
+<script src="canvas.js"></script>
