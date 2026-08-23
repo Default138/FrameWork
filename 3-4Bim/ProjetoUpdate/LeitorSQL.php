@@ -103,7 +103,7 @@ class LeitorSQL
           new ClassesControl($this->tabelas);
           new ClassesDAO($this->tabelas);
           new ClassesConexao($this->banco[1],$this->host[1]);
-          header("location: sistema/view/index.php");
+          header("location: sistema/view/index.php?sucesso=1");
           exit;
       }
   }
