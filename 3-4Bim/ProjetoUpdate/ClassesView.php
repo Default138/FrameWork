@@ -17,23 +17,18 @@ private $caminho = "sistema/view/";
         foreach ($listaEntidades as $entidade) {
             $listaAtributos = $this->entidades[$entidade];
             $cabecalho = "";
-            $dados="";
+            $dados = "";
             foreach ($listaAtributos as $key => $atributo) {
-                if($atributo["primary"])$chave=$key;
-               $cabecalho .= "<td>$key</td>\n";
-               $dados .= "<td><?php echo \$dado['{$key}']?></td>\n";
+                if($atributo["primary"]) $chave = $key;
+                $cabecalho .= "<th>$key</th>\n";
+                $dados .= "<td><?php echo \$dado['{$key}']?></td>\n";
             }
-            $cabecalho .= "<td colspan='2'>Gerenciamento</td>\n";
-            $p1="acao=3";  
-            $p2="id=<?php echo \$dado['{$chave}'] ?>";
-            $p3='acao=4';
-            $dados .= "<td><a href=__DIR__.'/../control/{$entidade}Control.php?{$p1}&{$p2}>Excluir</a></td>\n";
-            $dados.="<td>
-            <a href=__DIR__.'/../control/{$entidade}Control.php?{$p3}&{$p2}>Atualizar</a></td>\n";
-            $classe=ucfirst($entidade);
+            $cabecalho .= "<th colspan='2'>Gerenciamento</th>\n";
+            $dados .= "<td><a class='btn btn-danger btn-sm' href='../control/{$entidade}Control.php?acao=3&id=<?php echo \$dado[\"{$chave}\"] ?>'>Excluir</a></td>\n";
+            $dados .= "<td><a class='btn btn-success btn-sm' href='../control/{$entidade}Control.php?acao=4&id=<?php echo \$dado[\"{$chave}\"] ?>'>Atualizar</a></td>\n";
+            $classe = ucfirst($entidade);
             $conteudo = <<<LISTA
                 <?php
-                
                   require_once (__DIR__.'/../control/{$entidade}Control.php');
                   \$_REQUEST['acao'] = 2;
                   \$control = new {$classe}Control();
@@ -42,24 +37,55 @@ private $caminho = "sistema/view/";
                 <html>
                     <head>
                         <title>Lista de {$entidade}</title>
-                          <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+                        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+                        <style>
+                            body {
+                                font-family: "Segoe UI", Arial, sans-serif;
+                                background: linear-gradient(135deg, #0f172a, #1e293b);
+                                min-height: 100vh;
+                                padding: 40px 20px;
+                            }
+                            .card-lista {
+                                background: #ffffff;
+                                border-radius: 12px;
+                                box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+                                padding: 30px;
+                                max-width: 1100px;
+                                margin: 0 auto;
+                            }
+                            .card-lista h2 {
+                                color: #1e293b;
+                                margin-bottom: 20px;
+                            }
+                            .table thead {
+                                background-color: #1e293b;
+                                color: #ffffff;
+                            }
+                            .table tbody tr:hover {
+                                background-color: #f1f5f9;
+                            }
+                        </style>
                     </head>
                     <body>
-                    <table class="table table-striped">
-                    <tr> {$cabecalho}</tr>
-                     <?php
-                        foreach (\$dados as \$dado) {
-                      ?>
-                    <tr>{$dados}</tr>
-                    <?php
-                    }
-                    ?>
-                    </table>
+                    <div class="card-lista">
+                        <h2>Lista de {$entidade}</h2>
+                        <table class="table table-bordered table-striped align-middle">
+                            <thead>
+                                <tr>{$cabecalho}</tr>
+                            </thead>
+                            <tbody>
+                            <?php foreach (\$dados as \$dado): ?>
+                                <tr>{$dados}</tr>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                        <a class='btn btn-primary mt-2' href='index.php'>Voltar ao início</a>
+                    </div>
+                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
                     </body>
                 </html>
                 LISTA;
             file_put_contents("{$this->caminho}lista_" . $entidade . ".php", $conteudo);
-
         }
     }
     function criaFormulario() {
@@ -73,7 +99,7 @@ private $caminho = "sistema/view/";
                         $tipoForm = $util->converterTipoPHPForm($atributo["tipo"]);
                         $campos .= "<div class=\"mb-3\">";
                         $campos .= "<label for=\"$key\" class=\"form-label\">$key</label>";
-                        $campos .= "<input value='<?php echo (\$alt)?\$obj->get".ucfirst($key)."():\"\"?>' type='" . $tipoForm . "' name='" . $key . "' class=\"form-control\">";
+                        $campos .= "<input type='" . $tipoForm . "' name='" . $key . "' class=\"form-control\">";
                         $campos .= "</div>\n\t";
                     }
                 }
@@ -84,14 +110,15 @@ private $caminho = "sistema/view/";
                           <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
                     </head>
                     <body>
-
                     <div class="container mt-5">
                     <h2 class="mb-4">Cadastro</h2>
                     <form action="../control/{$entidade}Control.php" method="POST">
                     <input type="hidden" name="acao" value="1">
                       $campos
                       <button type="submit" class="btn btn-primary">Salvar</button>
+                      <a href="index.php" class="btn btn-secondary ms-2">Voltar</a>
                     </form>
+                    </div>
                     </body>
                 </html>
                 FORM;
@@ -102,33 +129,78 @@ private $caminho = "sistema/view/";
     function criarIndex() {
         $listaEntidades = array_keys($this->entidades);
         $listaMenuCadastro = "";
+        $listaMenuConsulta = "";
         foreach ($listaEntidades as $entidade) {
             $listaMenuCadastro .= "<li><a class=\"dropdown-item\" href=\"form_{$entidade}.php\">{$entidade}</a></li>\n";
+            $listaMenuConsulta .= "<li><a class=\"dropdown-item\" href=\"lista_{$entidade}.php\">{$entidade}</a></li>\n";
         }
         $conteudo = <<<INDEX
-            <style>
-                .brand-dropdown:hover .dropdown-menu {
-                    display: block;
-                    margin-top: 0; /* Remove o espaçamento entre o link e o menu */
-                }
-            </style>
             <html>
                 <head>
-                    <title>Cadastro</title>
+                    <title>Sistema</title>
                     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+                    <style>
+                        * { margin: 0; padding: 0; box-sizing: border-box; }
+                        body {
+                            font-family: "Segoe UI", Arial, sans-serif;
+                            background: linear-gradient(135deg, #0f172a, #1e293b);
+                            min-height: 100vh;
+                            display: flex;
+                            flex-direction: column;
+                        }
+                        nav { background-color: #111827; padding: 12px 24px; }
+                        .welcome {
+                            flex: 1;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+                            align-items: center;
+                            text-align: center;
+                            color: #fff;
+                            padding: 40px;
+                        }
+                        .welcome h1 { font-size: 2.5rem; margin-bottom: 12px; }
+                        .welcome p { font-size: 1.1rem; color: #94a3b8; max-width: 500px; }
+                        footer {
+                            background-color: #111827;
+                            color: #64748b;
+                            text-align: center;
+                            padding: 16px;
+                            font-size: 0.875rem;
+                        }
+                    </style>
                 </head>
                 <body>
-                <div class="dropdown brand-dropdown">
-                    <a class="navbar-brand dropdown-toggle" href="#" role="button"
-                    id="dropdownBrand" data-bs-toggle="dropdown" aria-expanded="false">
-                        Cadastro
-                    </a>
-                    <ul class="dropdown-menu" arial-labelledby="dropdownBrand">
-                        <li><a class="dropdown-menu" href="#">Link1</a></li>
-                        <li><a class="dropdown-menu" href="#">Link2</a></li>
-                        <li><a class="dropdown-menu" href="#">Link3</a></li>
-                    </ul>
+                <nav class="navbar navbar-expand-lg navbar-dark px-3">
+                    <div class="d-flex gap-3">
+                        <div class="dropdown">
+                            <a class="navbar-brand dropdown-toggle" href="#" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                                Cadastro
+                            </a>
+                            <ul class="dropdown-menu">
+                                $listaMenuCadastro
+                            </ul>
+                        </div>
+                        <div class="dropdown">
+                            <a class="navbar-brand dropdown-toggle" href="#" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                                Consultar
+                            </a>
+                            <ul class="dropdown-menu">
+                                $listaMenuConsulta
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+                <div class="welcome">
+                    <h1>Bem-vindo ao Sistema</h1>
+                    <p>Use o menu acima para cadastrar ou consultar os registros do sistema.</p>
                 </div>
+                <footer>
+                    &copy; <?php echo date('Y'); ?> Sistema MVC &mdash; Gerado automaticamente pelo Framework - Direitos Reservados a Rafael de Camargo Gonçalves
+                </footer>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
                 </body>
             </html>
             INDEX;

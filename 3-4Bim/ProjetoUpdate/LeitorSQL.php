@@ -98,12 +98,13 @@ class LeitorSQL
       } else {
           move_uploaded_file($arquivo_tmp, $arquivo["name"]);
           $this->receberArquivoSQL($arquivo["name"]);
-          new classesModel($this->tabelas);
-          new classesView($this->tabelas);
-          new classesControl($this->tabelas);
-          new classesDAO($this->tabelas);
-          new classesConexao($this->banco[1],$this->host[1]);
-
+          new ClassesModel($this->tabelas);
+          new ClassesView($this->tabelas);
+          new ClassesControl($this->tabelas);
+          new ClassesDAO($this->tabelas);
+          new ClassesConexao($this->banco[1],$this->host[1]);
+          header("location: sistema/view/index.php");
+          exit;
       }
   }
 }

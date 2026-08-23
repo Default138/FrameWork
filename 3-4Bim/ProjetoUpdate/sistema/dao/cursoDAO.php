@@ -13,10 +13,14 @@ class CursoDAO
       try{
         $sql = "insert into curso (nome,carga_horaria,descricao,id_professor) values(?,?,?,?)";
         $stmt = $this->conexao->prepare($sql);
-        $stmt->bindValue(1,$obj->getNome());
-		$stmt->bindValue(2,$obj->getCarga_horaria());
-		$stmt->bindValue(3,$obj->getDescricao());
-		$stmt->bindValue(4,$obj->getId_professor());
+        $val1 = $obj->getNome();
+		$stmt->bindValue(1, ($val1 === '' || $val1 === null) ? null : $val1);
+		$val2 = $obj->getCarga_horaria();
+		$stmt->bindValue(2, ($val2 === '' || $val2 === null) ? null : $val2);
+		$val3 = $obj->getDescricao();
+		$stmt->bindValue(3, ($val3 === '' || $val3 === null) ? null : $val3);
+		$val4 = $obj->getId_professor();
+		$stmt->bindValue(4, ($val4 === '' || $val4 === null) ? null : $val4);
 		
         $stmt->execute();
         return true;

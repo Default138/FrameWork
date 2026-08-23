@@ -22,7 +22,8 @@ private $chave = "id";
                 $i=1;
                 foreach ($listaAtributos as $key => $atributo) {
                     if(!$atributo["primary"]) {
-                        $bindings .= "\$stmt->bindValue($i,\$obj->get" . ucfirst($key) . "());\n\t\t";
+                        $bindings .= "\$val$i = \$obj->get" . ucfirst($key) . "();\n\t\t";
+                        $bindings .= "\$stmt->bindValue($i, (\$val$i === '' || \$val$i === null) ? null : \$val$i);\n\t\t";
                         $atributos .= $key . ",";
                         $placeholders .= "?,";
                         $i++;

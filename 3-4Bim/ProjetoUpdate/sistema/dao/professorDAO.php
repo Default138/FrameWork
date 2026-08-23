@@ -13,10 +13,14 @@ class ProfessorDAO
       try{
         $sql = "insert into professor (nome,email,especialidade,data_admissao) values(?,?,?,?)";
         $stmt = $this->conexao->prepare($sql);
-        $stmt->bindValue(1,$obj->getNome());
-		$stmt->bindValue(2,$obj->getEmail());
-		$stmt->bindValue(3,$obj->getEspecialidade());
-		$stmt->bindValue(4,$obj->getData_admissao());
+        $val1 = $obj->getNome();
+		$stmt->bindValue(1, ($val1 === '' || $val1 === null) ? null : $val1);
+		$val2 = $obj->getEmail();
+		$stmt->bindValue(2, ($val2 === '' || $val2 === null) ? null : $val2);
+		$val3 = $obj->getEspecialidade();
+		$stmt->bindValue(3, ($val3 === '' || $val3 === null) ? null : $val3);
+		$val4 = $obj->getData_admissao();
+		$stmt->bindValue(4, ($val4 === '' || $val4 === null) ? null : $val4);
 		
         $stmt->execute();
         return true;

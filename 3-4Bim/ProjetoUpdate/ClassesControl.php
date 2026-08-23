@@ -40,6 +40,8 @@ private $entidades;
                           case 1:
                           \$this->prepararObjeto();
                           \$this->dao->inserir( \$this->obj);
+                          header("Location: ../view/index.php");
+                          exit;
                           break;
                           case 2:
                           return \$this->dao->listar();
