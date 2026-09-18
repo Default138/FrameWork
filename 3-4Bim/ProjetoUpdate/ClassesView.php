@@ -250,7 +250,7 @@ private $caminho = "sistema/view/";
             INDEX;
         file_put_contents("{$this->caminho}index.php", $conteudo);
     }
-    
+
 function criarDownload() {
         $conteudo = <<<DOWNLOAD
         <?php
@@ -276,9 +276,7 @@ function criarDownload() {
         foreach (\$arquivos as \$arquivo) {
             if (!\$arquivo->isDir()) {
                 \$caminhoReal = \$arquivo->getRealPath();
-                // Obtém a estrutura relativa correta após resolver o caminho absoluto
                 \$caminhoRelativo = 'sistema/' . substr(\$caminhoReal, strlen(\$pastaOrigem) + 1);
-                // Padroniza as separações de pasta para o padrão ZIP
                 \$caminhoRelativo = str_replace('\\\\', '/', \$caminhoRelativo);
                 
                 \$zip->addFile(\$caminhoReal, \$caminhoRelativo);

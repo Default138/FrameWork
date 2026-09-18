@@ -26,18 +26,18 @@ class ClassesDAO{
             $i = 1;
             $j = 1;
             
-            // Variável local para resetar a chave a cada nova entidade
+            //Variável local para resetar a chave a cada nova entidade
             $chave = "id"; 
 
             foreach ($listaAtributos as $key => $atributo) {
                 if(!$atributo["primary"]) {
-                    // inserir
+                    //inserir
                     $bindings .= "\$val$i = \$obj->get" . ucfirst($key) . "();\n\t\t";
                     $bindings .= "\$stmt->bindValue($i, (\$val$i === '' || \$val$i === null) ? null : \$val$i);\n\t\t";
                     $atributos .= $key . ",";
                     $placeholders .= "?,";
                     
-                    // alterar
+                    //alterar
                     $setClauses .= "$key = ?, ";
                     $bindAlterar .= "\$valA$j = \$objeto->get" . ucfirst($key) . "();\n\t\t";
                     $bindAlterar .= "\$stmt->bindValue($j, (\$valA$j === '' || \$valA$j === null) ? null : \$valA$j);\n\t\t";
@@ -45,7 +45,7 @@ class ClassesDAO{
                     $i++;
                     $j++;
                 } else {
-                    $chave = $key; // Captura a chave primária apenas para a entidade atual
+                    $chave = $key; //Captura a chave primária apenas para a entidade atual
                 }
             }
             
@@ -55,7 +55,7 @@ class ClassesDAO{
             $nomeClasse = ucfirst($entidade);
             $camelChave = ucfirst($chave);
             
-            // ultimo binding do alterar é o id
+            //ultimo binding do alterar é o id
             $bindAlterar .= "\$stmt->bindValue($j, \$objeto->get{$camelChave}());\n\t\t";
 
             $conteudo = <<<CLASS
