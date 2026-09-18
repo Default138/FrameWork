@@ -250,30 +250,58 @@ private $caminho = "sistema/view/";
             INDEX;
         file_put_contents("{$this->caminho}index.php", $conteudo);
     }
-    function criarDownload() {
+    
+function criarDownload() {
         $conteudo = <<<DOWNLOAD
         <?php
-        \$pastaOrigem = __DIR__ . '/../../sistema';
+        \$pastaOrigem = realpath(__DIR__ . '/../../sistema');
         \$arquivoZip  = sys_get_temp_dir() . '/sistema.zip';
-        if (!is_dir(\$pastaOrigem)) { echo "Pasta sistema não encontrada."; exit; }
+        
+        if (!\$pastaOrigem || !is_dir(\$pastaOrigem)) { 
+            echo "Pasta sistema não encontrada."; 
+            exit; 
+        }
+        
         \$zip = new ZipArchive();
-        if (\$zip->open(\$arquivoZip, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) { echo "Erro ao criar o arquivo zip."; exit; }
-        \$arquivos = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(\$pastaOrigem), RecursiveIteratorIterator::LEAVES_ONLY);
+        if (\$zip->open(\$arquivoZip, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) { 
+            echo "Erro ao criar o arquivo zip."; 
+            exit; 
+        }
+        
+        \$arquivos = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator(\$pastaOrigem), 
+            RecursiveIteratorIterator::LEAVES_ONLY
+        );
+        
         foreach (\$arquivos as \$arquivo) {
             if (!\$arquivo->isDir()) {
                 \$caminhoReal = \$arquivo->getRealPath();
+                // Obtém a estrutura relativa correta após resolver o caminho absoluto
                 \$caminhoRelativo = 'sistema/' . substr(\$caminhoReal, strlen(\$pastaOrigem) + 1);
+                // Padroniza as separações de pasta para o padrão ZIP
+                \$caminhoRelativo = str_replace('\\\\', '/', \$caminhoRelativo);
+                
                 \$zip->addFile(\$caminhoReal, \$caminhoRelativo);
             }
         }
         \$zip->close();
-        header('Content-Type: application/zip');
-        header('Content-Disposition: attachment; filename="sistema.zip"');
-        header('Content-Length: ' . filesize(\$arquivoZip));
-        readfile(\$arquivoZip);
-        unlink(\$arquivoZip);
-        exit;
+        
+        if (file_exists(\$arquivoZip)) {
+            header('Content-Type: application/zip');
+            header('Content-Disposition: attachment; filename="sistema.zip"');
+            header('Content-Length: ' . filesize(\$arquivoZip));
+            header('Pragma: no-cache');
+            header('Expires: 0');
+            
+            ob_clean();
+            flush();
+            
+            readfile(\$arquivoZip);
+            unlink(\$arquivoZip);
+            exit;
+        }
         DOWNLOAD;
+        
         file_put_contents("{$this->caminho}download.php", $conteudo);
     }
 }
